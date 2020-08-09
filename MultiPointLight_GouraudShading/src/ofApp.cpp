@@ -9,144 +9,60 @@ void ofApp::setup() {
 	initGUI();
 	createUBO();
 	
-
-	
-	
-	/*
-	cout << "GL_MAX_UNIFORM_BUFFER_BINDINGS " << GL_MAX_UNIFORM_BUFFER_BINDINGS << endl;
-	blockIndex_LightInfo = shader.getUniformBlockIndex("LightInfo ");
-	glUniformBlockBinding(shader.getProgram(), blockIndex_LightInfo, 0);//FuckIII
-	glGetActiveUniformBlockiv(shader.getProgram(), blockIndex_LightInfo, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize_LightInfo);
-	blockBuffer_light = (GLubyte*)malloc(blockSize_LightInfo);
-	const GLchar* names[] = {"LightInfo.Position", "LightInfo.La" , "LightInfo.Ld" , "LightInfo.Ls" };
-	int n = 4;
-	GLuint indices[4];
-	glGetUniformIndices(shader.getProgram(), n, names, indices);
-	GLint offset[4];
-	glGetActiveUniformsiv(shader.getProgram(), n, indices, GL_UNIFORM_OFFSET, offset);
-	
-	ofVec4f lightPos = ofVec4f(1.0, 0.0, 0.0, 1.0);
-	_La = ofVec4f(ofVec3f(La).x, ofVec3f(La).y, ofVec3f(La).z, 0.0);
-	_Ld = ofVec4f(ofVec3f(Ld).x, ofVec3f(Ld).y, ofVec3f(Ld).z, 0.0);
-	_Ls = ofVec4f(ofVec3f(Ls).x, ofVec3f(Ls).y, ofVec3f(Ls).z, 0.0);
-	
-	memcpy(blockBuffer_light + offset[0], &lightPos, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_light + offset[1], &_La, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_light + offset[2], &_Ld, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_light + offset[3], &_Ls, 4 * sizeof(GLfloat));
-
-	cout << offset[0] << endl;
-	
-	
-
-	glGenBuffers(1, &uboHandle_LightInfo);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboHandle_LightInfo);
-	glBufferData(GL_UNIFORM_BUFFER, blockSize_LightInfo, blockBuffer_light, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-
-	//------------------------
-	//Material
-	
-	blockIndex_MaterialInfo = shader.getUniformBlockIndex("MaterialInfo");
-	glUniformBlockBinding(shader.getProgram(), blockIndex_MaterialInfo, 1);
-	cout << "blockIndex_MaterialInfo : " << blockIndex_MaterialInfo << endl;
-	glGetActiveUniformBlockiv(shader.getProgram(), blockIndex_MaterialInfo, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize_MaterialInfo);
-	blockBuffer_material = (GLubyte*)malloc(blockSize_MaterialInfo);
-	GLchar* names_material[] = { "MaterialInfo.Ka", "MaterialInfo.Kd", "MaterialInfo.Ks", "MaterialInfo.shininess"};
-	n = 4;
-	GLuint indices_material[4];
-	GLint offset_material[4];
-	glGetUniformIndices(shader.getProgram(), n, names_material, indices_material);
-	glGetActiveUniformsiv(shader.getProgram(), n, indices_material, GL_UNIFORM_OFFSET, offset_material);
-	_Ka = ofVec4f(ofVec3f(Ka).x, ofVec3f(Ka).y, ofVec3f(Ka).z, 0.0);
-	_Kd = ofVec4f(ofVec3f(Kd).x, ofVec3f(Kd).y, ofVec3f(Kd).z, 0.0);
-	_Ks = ofVec4f(ofVec3f(Ks).x, ofVec3f(Ks).y, ofVec3f(Ks).z, 0.0);
-
-	float shininess = 1.0;
-	memcpy(blockBuffer_material + offset_material[0], &_Ka, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_material + offset_material[1], &_Kd, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_material + offset_material[2], &_Ks, 4 * sizeof(GLfloat));
-	memcpy(blockBuffer_material + offset[3], &shininess, sizeof(GLfloat));
-
-
-	glGenBuffers(1, &uboHandle_MaterialInfo);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboHandle_MaterialInfo);
-	glBufferData(GL_UNIFORM_BUFFER, blockSize_MaterialInfo, blockBuffer_material, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	
-
-	cout << "blockIndex_LightInfo : " << blockIndex_LightInfo << endl;
-	cout << "blockIndex_MaterialInfo : " << blockIndex_MaterialInfo << endl;
-	*/
-	
+	shader.printActiveUniforms();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	//ofSetWindowTitle(to_string(ofGetFrameRate()));
-	//lightPos = ofVec3f(200.0 * cos(ofGetFrameNum() * 0.06), 150.0 * sin(ofGetFrameNum() * 0.05), 150.0 * cos(ofGetFrameNum() * 0.02));
-
-	
+	Ka = ofVec4f(ofVec3f(_Ka).x, ofVec3f(_Ka).y, ofVec3f(_Ka).z, 0.0);
+	Kd = ofVec4f(ofVec3f(_Kd).x, ofVec3f(_Kd).y, ofVec3f(_Kd).z, 0.0);
+	Ks = ofVec4f(ofVec3f(_Ks).x, ofVec3f(_Ks).y, ofVec3f(_Ks).z, 0.0);
+	shininess = _shininess;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofSetBackgroundColor(0);
+	ofBackgroundGradient(startColor, endColor, OF_GRADIENT_CIRCULAR);
 	ofEnableDepthTest();
 
-
-	/*
-	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_LightInfo, uboHandle_LightInfo);
-	glUniformBlockBinding(shader.getProgram(), uboHandle_LightInfo, 0);
-	_La = ofVec4f(ofVec3f(La).x, ofVec3f(La).y, ofVec3f(La).z, 1.0);
-	_Ld = ofVec4f(ofVec3f(Ld).x, ofVec3f(Ld).y, ofVec3f(Ld).z, 1.0);
-	_Ls = ofVec4f(ofVec3f(Ls).x, ofVec3f(Ls).y, ofVec3f(Ls).z, 1.0);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 16, 4 * sizeof(GLfloat), &_La);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 32, 4 * sizeof(GLfloat), &_Ld);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 48, 4 * sizeof(GLfloat), &_Ls);
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_MaterialInfo, uboHandle_MaterialInfo);
-	glUniformBlockBinding(shader.getProgram(), uboHandle_MaterialInfo, 1);
-	_Ka = ofVec4f(ofVec3f(Ka).x, ofVec3f(Ka).y, ofVec3f(Ka).z, 0.0);
-	_Kd = ofVec4f(ofVec3f(Kd).x, ofVec3f(Kd).y, ofVec3f(Kd).z, 0.0);
-	_Ks = ofVec4f(ofVec3f(Ks).x, ofVec3f(Ks).y, ofVec3f(Ks).z, 0.0);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 , 4 * sizeof(GLfloat), &_Ka);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 16, 4 * sizeof(GLfloat), &_Kd);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 32, 4 * sizeof(GLfloat), &_Ks);
-	*/
+	shader.begin();
+	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uboHandle);
+	glUniformBlockBinding(programHandle, uboHandle, 0);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4 * sizeof(GLfloat), &Ka);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 16, 4 * sizeof(GLfloat), &Kd);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 32, 4 * sizeof(GLfloat), &Ks);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0 + 48, sizeof(GLfloat), &shininess);
+	for (int i = 0; i < LIGHT_NUM; i++) {
+		auto name = "lightInfo[" + to_string(i) + "].position";
+		shader.setUniform3f(name, lightInfo[i].position);
+		name = "lightInfo[" + to_string(i) + "].intensity";
+		shader.setUniform3f(name, lightInfo[i].intensity);
+	}
 	
-
-	//shader.begin();
-	//shader.setUniform4f("light.La", ofVec4f(1.0, 0.0, 1.0, 1.0));
 	
-	/*
-	shader.setUniform3f("_LightPos", ofVec3f(lightPos));
-	shader.setUniform3f("_La", ofVec3f(La));
-	shader.setUniform3f("_Ld", ofVec3f(Ld));
-	shader.setUniform3f("_Ls", ofVec3f(Ls));
-	shader.setUniform3f("_Ka", ofVec3f(Ka));
-	shader.setUniform3f("_Kd", ofVec3f(Kd));
-	shader.setUniform3f("_Ks", ofVec3f(Ks));
-	shader.setUniform1f("_shininess", shininess);
-	shader.setUniform1i("_debug", int(debug));
-	*/
-
 	cam.begin();
 	ofMatrix4x4 model;
-	model.rotateRad(ofGetFrameNum() * 0.01, 0.0, 1.0, 0.0);
 	ofMatrix4x4 view;
 	ofMatrix4x4 proj;
+	model.rotateRad(ofDegToRad(ofGetFrameNum()), 0, 1, 0);
 	shader.setUniformMatrix4f("model", model);
 	view = ofGetCurrentViewMatrix();
 	shader.setUniformMatrix4f("view", view);
 	shader.setUniformMatrix4f("proj", cam.getProjectionMatrix());
+	shader.setUniform1i("type", 0);
 	mesh.draw();
+
+	model.makeIdentityMatrix();
+	model.rotateRad(ofDegToRad(88), 1, 0, 0);
+	model.setTranslation(0.0, -265.0, 0.0);
+	shader.setUniformMatrix4f("model", model);
+	shader.setUniform1i("type", 1);
+	//plane.draw();
 	cam.end();
-	//shader.end();
+	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, 0);
+	shader.end();
 	
-	//glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_LightInfo, 0);
-	//glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_MaterialInfo, 0);
+	
 
 	ofDisableDepthTest();
 	gui.draw();
@@ -166,22 +82,31 @@ void ofApp::initScene() {
 	model.enableNormals();
 	mesh = model.getMesh(0);
 	mesh.enableNormals();
+
+	plane.set(5000, 5000);
+	plane.setResolution(100, 100);
 }
 //--------------------------------------------------------------
 void ofApp::initLight() {
+	float range = 10000;
 	for (int i = 0; i < LIGHT_NUM; i++) {
-		lightInfo[i].position = ofVec3f(0.0, 100.0, 0.0);
-		lightInfo[i].intensity = ofVec3f(1.0, 1.0, 1.0);
+		lightInfo[i].position = ofVec3f(ofRandom(-range, range), ofRandom(-range, range), ofRandom(-range, range));
+		lightInfo[i].intensity = ofVec3f(ofRandom(0.4), ofRandom(0.4), ofRandom(0.4));
+		auto name = "lightInfo[" + to_string(i) + "].position";
+		ofLogNotice(name + " : " + ofToString(lightInfo[i].position));
+		name = "lightInfo[" + to_string(i) + "].intensity";
+		ofLogNotice(name + " : " + ofToString(lightInfo[i].intensity));
 	}
 }
 //--------------------------------------------------------------
 void ofApp::initGUI() {
 	gui.setup();
-	gui.add(_Ka.set("Mat_Ambient", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(_Kd.set("Mat_Diffuse", ofVec3f(0.75, 0.75, 0.75), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(_Ks.set("Mat_Specular", ofVec3f(1.0, 1.0, 1.0), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(shininess.set("shininess", 5.0, 0.0, 200.0));
-	gui.add(debug.setup("Debug", false));
+	gui.add(_Ka.set("Mat_Ambient", ofVec3f(0.1, 0.1, 0.1), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(_Kd.set("Mat_Diffuse", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(_Ks.set("Mat_Specular", ofVec3f(0.7, 0.7, 0.7), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(_shininess.set("shininess", 5.0, 0.0, 200.0));
+	gui.add(startColor.set("start color", ofColor(54, 230, 140), ofColor(0, 0), ofColor(255, 255)));
+	gui.add(endColor.set("end color", ofColor(255, 140, 0), ofColor(0, 0), ofColor(255, 255)));
 }
 //--------------------------------------------------------------
 void ofApp::createUBO() {
@@ -200,4 +125,30 @@ void ofApp::createUBO() {
 	cout << "DataSize : " << blockSize << endl;
 	blockBuffer= (GLubyte*)malloc(blockSize);
 
+
+	//get byte offset
+	GLchar* names[] = { "MaterialInfo.Ka", "MaterialInfo.Kd", "MaterialInfo.Ks", "MaterialInfo.shininess" };
+	GLuint indices[4];
+	GLint offset[4];
+	glGetUniformIndices(programHandle, 4, names, indices);
+	glGetActiveUniformsiv(shader.getProgram(), 4, indices, GL_UNIFORM_OFFSET, offset);
+	for (int i = 0; i < 4; i++) {
+		cout << "Byte OffSet : " << offset[i] << endl;
+	}
+
+	//set data (-> temporary buffer)
+	Ka = ofVec4f(0.5, 0.5, 0.5, 0.0);
+	Kd = ofVec4f(0.75, 0.75, 0.75, 0.0);
+	Ks = ofVec4f(1.0, 1.0, 1.0, 0.0);
+
+	memcpy(blockBuffer + offset[0], &Ka, 4 * sizeof(GLfloat));
+	memcpy(blockBuffer + offset[1], &Kd, 4 * sizeof(GLfloat));
+	memcpy(blockBuffer + offset[2], &Ks, 4 * sizeof(GLfloat));
+	memcpy(blockBuffer + offset[3], &shininess, sizeof(GLfloat));
+
+	//create buffer and set data
+	glGenBuffers(1, &uboHandle);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboHandle);
+	glBufferData(GL_UNIFORM_BUFFER, blockSize, blockBuffer, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

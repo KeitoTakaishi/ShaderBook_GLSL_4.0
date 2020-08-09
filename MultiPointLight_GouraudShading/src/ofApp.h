@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
-#define LIGHT_NUM 5
+#define LIGHT_NUM 7
 class ofApp : public ofBaseApp {
 
 public:
@@ -19,6 +19,7 @@ public:
 
 	ofxAssimpModelLoader model;
 	ofVboMesh mesh;
+	ofPlanePrimitive plane;
 	ofShader shader;
 	ofEasyCam cam;
 
@@ -35,16 +36,16 @@ public:
 	GLuint programHandle;
 	GLint blockIndex;
 	GLint blockSize;
-	GLuint uboHandle_MaterialInfo;
+	GLuint uboHandle;
 	GLubyte* blockBuffer;
 
 	ofVec4f Ka, Kd, Ks;
-
+	float shininess;
 	//Gui
 	ofxPanel gui;
 	ofParameter<ofVec3f> _Ka;
 	ofParameter<ofVec3f> _Kd;
 	ofParameter<ofVec3f> _Ks;
-	ofParameter<float> shininess;
-	ofxToggle debug;
+	ofParameter<float> _shininess;
+	ofParameter<ofColor> startColor, endColor;
 };
