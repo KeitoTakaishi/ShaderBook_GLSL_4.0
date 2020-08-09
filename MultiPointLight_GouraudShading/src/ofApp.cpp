@@ -1,41 +1,15 @@
 #include "ofApp.h"
-
 //--------------------------------------------------------------
 void ofApp::setup() {
-	shader.load("shaders/shader.vert", "shaders/shader.frag");
-
-
-	model.loadModel("model/model.obj", true);
-	model.setScale(100, 100, 100);
-	model.enableNormals();
-
-	mesh = model.getMesh(0);
-	mesh.enableNormals();
-
-
-	gui.setup();
-	gui.add(lightPos.set("LightPos", ofVec3f(100, 100, 0.0), ofVec3f(-300, -300, -300.0), ofVec3f(300, 300, 300.0)));
-	gui.add(La.set("La", ofVec3f(0.15, 0.2, 0.2), ofVec3f(0.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(Ld.set("Ld", ofVec3f(0.5, 0.51, 0.75), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(Ls.set("Ls", ofVec3f(0.5, 0.8, 1.0), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(Ka.set("Ka", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(Kd.set("Kd", ofVec3f(0.75, 0.75, 0.75), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(Ks.set("Ks", ofVec3f(1.0, 1.0, 1.0), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(shininess.set("shininess", 5.0, 0.0, 200.0));
-	gui.add(debug.setup("Debug", false));
-
-
 	ofSetVerticalSync(false);
 	ofSetFrameRate(60);
 
+	initScene();
+	initLight();
+	initGUI();
+	createUBO();
+	
 
-
-	//Ubo
-	cout  <<  "GetProgram : " << shader.getProgram() << endl;
-	ofLogNotice("----Uniform Valiables-----");
-	shader.printActiveUniforms();
-	ofLogNotice("----Uniform Blocks-----");
-	shader.printActiveUniformBlocks();
 	
 	
 	/*
@@ -111,11 +85,9 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	//ofSetWindowTitle(to_string(ofGetFrameRate()));
+	//lightPos = ofVec3f(200.0 * cos(ofGetFrameNum() * 0.06), 150.0 * sin(ofGetFrameNum() * 0.05), 150.0 * cos(ofGetFrameNum() * 0.02));
 
-	float x = ofNoise(ofGetFrameNum() * 100.0) * 2.0 - 1.0;
-	lightPos = ofVec3f(200.0 * cos(ofGetFrameNum() * 0.06), 150.0 * sin(ofGetFrameNum() * 0.05), 150.0 * cos(ofGetFrameNum() * 0.02));
-
-	shininess = 1 + (sin(ofGetFrameNum() * 0.05) * 0.5 + 0.5) * 10.0;
+	
 }
 
 //--------------------------------------------------------------
@@ -145,9 +117,11 @@ void ofApp::draw() {
 	*/
 	
 
-	shader.begin();
-	shader.setUniform4f("light.La", ofVec4f(1.0, 0.0, 1.0, 1.0));
-	/*shader.setUniform3f("_LightPos", ofVec3f(lightPos));
+	//shader.begin();
+	//shader.setUniform4f("light.La", ofVec4f(1.0, 0.0, 1.0, 1.0));
+	
+	/*
+	shader.setUniform3f("_LightPos", ofVec3f(lightPos));
 	shader.setUniform3f("_La", ofVec3f(La));
 	shader.setUniform3f("_Ld", ofVec3f(Ld));
 	shader.setUniform3f("_Ls", ofVec3f(Ls));
@@ -155,10 +129,8 @@ void ofApp::draw() {
 	shader.setUniform3f("_Kd", ofVec3f(Kd));
 	shader.setUniform3f("_Ks", ofVec3f(Ks));
 	shader.setUniform1f("_shininess", shininess);
-	shader.setUniform1i("_debug", int(debug));*/
-
-
-
+	shader.setUniform1i("_debug", int(debug));
+	*/
 
 	cam.begin();
 	ofMatrix4x4 model;
@@ -171,9 +143,9 @@ void ofApp::draw() {
 	shader.setUniformMatrix4f("proj", cam.getProjectionMatrix());
 	mesh.draw();
 	cam.end();
-	shader.end();
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_LightInfo, 0);
+	//shader.end();
+	
+	//glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_LightInfo, 0);
 	//glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex_MaterialInfo, 0);
 
 	ofDisableDepthTest();
@@ -186,4 +158,46 @@ void ofApp::keyPressed(int key) {
 		shader.load("shaders/shader.vert", "shaders/shader.frag");
 	}
 }
+//--------------------------------------------------------------
+void ofApp::initScene() {
+	shader.load("shaders/shader.vert", "shaders/shader.frag");
+	model.loadModel("model/model.obj", true);
+	model.setScale(100, 100, 100);
+	model.enableNormals();
+	mesh = model.getMesh(0);
+	mesh.enableNormals();
+}
+//--------------------------------------------------------------
+void ofApp::initLight() {
+	for (int i = 0; i < LIGHT_NUM; i++) {
+		lightInfo[i].position = ofVec3f(0.0, 100.0, 0.0);
+		lightInfo[i].intensity = ofVec3f(1.0, 1.0, 1.0);
+	}
+}
+//--------------------------------------------------------------
+void ofApp::initGUI() {
+	gui.setup();
+	gui.add(_Ka.set("Mat_Ambient", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(_Kd.set("Mat_Diffuse", ofVec3f(0.75, 0.75, 0.75), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(_Ks.set("Mat_Specular", ofVec3f(1.0, 1.0, 1.0), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(shininess.set("shininess", 5.0, 0.0, 200.0));
+	gui.add(debug.setup("Debug", false));
+}
+//--------------------------------------------------------------
+void ofApp::createUBO() {
+	programHandle = shader.getProgram();
+	ofLogNotice("ProgramHandle : " + to_string(programHandle));
 
+	shader.printActiveUniformBlocks();
+	
+	//bind
+	string key = "MaterialInfo";
+	blockIndex = shader.getUniformBlockIndex(key);
+	//ID
+	glUniformBlockBinding(programHandle, blockIndex, 0);
+	//get UBO data size
+	glGetActiveUniformBlockiv(programHandle, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+	cout << "DataSize : " << blockSize << endl;
+	blockBuffer= (GLubyte*)malloc(blockSize);
+
+}

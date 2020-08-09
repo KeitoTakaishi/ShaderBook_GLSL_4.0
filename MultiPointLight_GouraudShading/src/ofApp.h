@@ -3,16 +3,18 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxGui.h"
-
+#define LIGHT_NUM 5
 class ofApp : public ofBaseApp {
 
 public:
 	void setup();
 	void update();
 	void draw();
-
 	void keyPressed(int key);
-
+	void initScene();
+	void initLight();
+	void initGUI();
+	void createUBO();
 
 
 	ofxAssimpModelLoader model;
@@ -20,29 +22,29 @@ public:
 	ofShader shader;
 	ofEasyCam cam;
 
-	//ubo
-	GLint blockIndex_LightInfo;
-	GLint blockSize_LightInfo;
-	GLuint uboHandle_LightInfo;
-	GLint blockIndex_MaterialInfo;
-	GLint blockSize_MaterialInfo;
-	GLuint uboHandle_MaterialInfo;
-	GLubyte* blockBuffer_light;
-	GLubyte* blockBuffer_material;
 
-	ofVec4f _La, _Ld, _Ls;
-	ofVec4f _Ka, _Kd, _Ks;
+	//shader_uniforms==========
+	typedef struct  {
+		ofVec3f position;
+		ofVec3f intensity;
+	} LightInfo;
+	
+	LightInfo lightInfo[LIGHT_NUM];
+
+	//ubo
+	GLuint programHandle;
+	GLint blockIndex;
+	GLint blockSize;
+	GLuint uboHandle_MaterialInfo;
+	GLubyte* blockBuffer;
+
+	ofVec4f Ka, Kd, Ks;
 
 	//Gui
 	ofxPanel gui;
-	ofParameter<ofVec3f> lightPos;
-	ofParameter<ofVec3f> La;
-	ofParameter<ofVec3f> Ld;
-	ofParameter<ofVec3f> Ls;
-
-	ofParameter<ofVec3f> Ka;
-	ofParameter<ofVec3f> Kd;
-	ofParameter<ofVec3f> Ks;
+	ofParameter<ofVec3f> _Ka;
+	ofParameter<ofVec3f> _Kd;
+	ofParameter<ofVec3f> _Ks;
 	ofParameter<float> shininess;
 	ofxToggle debug;
 };
