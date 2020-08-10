@@ -25,10 +25,13 @@ class ofApp : public ofBaseApp{
 
 		//gui
 		ofxPanel gui;
-		ofParameter<ofVec3f> _Ka;
-		ofParameter<ofVec3f> _Kd;
-		ofParameter<ofVec3f> _Ks;
-		ofParameter<float> _shininess;
+		ofParameter<ofVec3f> lightPosition;
+		ofParameter<ofVec3f> lightIntensity;
+		ofParameter<ofVec3f> Ka;
+		ofParameter<ofVec3f> Kd;
+		ofParameter<ofVec3f> Ks;
+		ofParameter<float> shininess;
+		ofxToggle optimize;
 
 	
 		

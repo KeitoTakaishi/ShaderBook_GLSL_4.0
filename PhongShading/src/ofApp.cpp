@@ -17,9 +17,9 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetBackgroundColor(0.0);
+	ofEnableDepthTest();
 
-
-	//shader.begin();
+	shader.begin();
 	cam.begin();
 	ofMatrix4x4 model;
 	ofMatrix4x4 view;
@@ -29,17 +29,19 @@ void ofApp::draw(){
 	view = ofGetCurrentViewMatrix();
 	shader.setUniformMatrix4f("view", view);
 	shader.setUniformMatrix4f("proj", cam.getProjectionMatrix());
-	shader.setUniform1i("type", 0);
+	shader.setUniform3f("lightPosition", ofVec3f(lightPosition));
+	shader.setUniform3f("lightIntensity", ofVec3f(lightIntensity));
+	shader.setUniform3f("Ka", ofVec3f(Ka));
+	shader.setUniform3f("Kd", ofVec3f(Kd));
+	shader.setUniform3f("Ks", ofVec3f(Ks));
+	shader.setUniform1f("shininess", shininess);
+	shader.setUniform1i("optimize", int(optimize));
+
 	mesh.draw();
 
-	model.makeIdentityMatrix();
-	model.rotateRad(ofDegToRad(88), 1, 0, 0);
-	model.setTranslation(0.0, -265.0, 0.0);
-	shader.setUniformMatrix4f("model", model);
-	shader.setUniform1i("type", 1);
+	
 	cam.end();
-
-	//shader.end();
+	shader.end();
 
 	ofDisableDepthTest();
 	gui.draw();
@@ -62,8 +64,11 @@ void ofApp::initScene() {
 //--------------------------------------------------------------
 void ofApp::initGUI() {
 	gui.setup();
-	gui.add(_Ka.set("Mat_Ambient", ofVec3f(0.1, 0.1, 0.1), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(_Kd.set("Mat_Diffuse", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(_Ks.set("Mat_Specular", ofVec3f(0.7, 0.7, 0.7), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
-	gui.add(_shininess.set("shininess", 5.0, 0.0, 200.0));
+	gui.add(lightPosition.set("lightPosition", ofVec3f(0.0, 100., 0.), ofVec3f(-300., -300., -300.), ofVec3f(300., 300., 300.)));
+	gui.add(lightIntensity.set("lightIntensity", ofVec3f(.6, .6, .6), ofVec3f(.0, .0, .0), ofVec3f(1., 1., 1.)));
+	gui.add(Ka.set("Mat_Ambient", ofVec3f(0.6, 0.6, 0.6), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(Kd.set("Mat_Diffuse", ofVec3f(0.5, 0.5, 0.5), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(Ks.set("Mat_Specular", ofVec3f(0.54, 0.7, 0.7), ofVec3f(.0, .0, .0), ofVec3f(1.0, 1.0, 1.0)));
+	gui.add(shininess.set("shininess", 5.0, 0.0, 200.0));
+	gui.add(optimize.setup("optimize", false));
 }
