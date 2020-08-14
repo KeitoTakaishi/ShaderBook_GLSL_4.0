@@ -1,31 +1,30 @@
-#version 150
+#version 400
 precision mediump float;
 
-uniform vec3 eyePosition;
-uniform samplerCube	EnvMap;
-uniform int reflection;
 
+uniform samplerCube	EnvMap;
+uniform int DrawSkyBox;
+uniform float refrectFactor;
+uniform vec3 materialColor;
+/*
 in vec3 vPosition;
 in vec3 vNormal;
 in vec3 envBoxvNormal;
 in vec4 vColor;
 in vec2 vTexCoord;
+*/
+in vec3 refrectDir;
 
 out vec4 outputColor;
 
-void main(){
-    
-    vec3 ref = vec3(0.0, 0.0, 0.0);
-    if(reflection == 1){
+void main(){    
+    if(DrawSkyBox == 1){
         //Cube
-        ref = reflect(vPosition - eyePosition, vNormal);
+        vec4 envColor  = texture(EnvMap, refrectDir);
+        outputColor = vec4( vec3(mix(materialColor, envColor.xyz, refrectFactor)), 1.0);
     }else{
         //Box
-        //ref = vNormal;
-        ref = envBoxvNormal;
+       vec4 envColor  = texture(EnvMap, refrectDir);
+       outputColor = envColor;
     }
-    
-    vec4 envColor  = texture(EnvMap, ref);
-    vec4 destColor = vColor * envColor;
-    outputColor   = destColor;
 }
