@@ -15,4 +15,7 @@
 <img src="./src/phong.gif" alt="" title="phong">
 
 ## CubeMap_Reflection
+[Panorama Image](https://texturify.com/category/environment-panoramas.html "Panorama Image")
+<br>
+[Converter](https://jaxry.github.io/panorama-to-cubemap/ "Converter")
 <img src="./src/CubeMap_Reflection.gif" alt="" title="CubeMap_Reflection">
