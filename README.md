@@ -9,7 +9,10 @@
 
 
 ## PhongShading
-- when optimize is false : r =is reflect
-- when optimize is true :  use half(to LightVec + to CameraVec) vector
+- when optimize is false : simple reflect
+- when optimize is true :  use half vector(to LightVec + to CameraVec)
 
 <img src="./src/phong.gif" alt="" title="phong">
+
+## CubeMap_Reflection
+<img src="./src/CubeMap_Reflection.gif" alt="" title="CubeMap_Reflection">
