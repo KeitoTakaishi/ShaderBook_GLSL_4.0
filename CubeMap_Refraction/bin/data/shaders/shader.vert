@@ -5,6 +5,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 uniform mat4 mvp;
+
+uniform float eta;
 uniform vec3 worldCameraPos;
 uniform int DrawSkyBox;
 
@@ -13,12 +15,8 @@ in vec3 normal;
 in vec4 color;
 in vec2 texcoord;
 
-//out vec3 vPosition;
-//out vec3 vNormal;
-//out vec3 envBoxvNormal;
-//out vec4 vColor;
-//out vec2 vTexCoord;
-out vec3 refrectDir;
+out vec3 reflectDir;
+out vec3 refractDir;
 
 void main() {
     vec3 worldPos = (model * vec4(position, 1.0)).xyz;
@@ -26,9 +24,10 @@ void main() {
     vec3 worldView = normalize(worldCameraPos - worldPos);
 
     if(DrawSkyBox == 1){
-        refrectDir = reflect(-worldView, worldNormal);
+        reflectDir = reflect(-worldView, worldNormal);
+        refractDir = refract(-worldView, worldNormal, eta);
     }else{
-        refrectDir = normalize(position);
+        reflectDir = normalize(position);
     }
     
     gl_Position    = proj * view * model * vec4(position, 1.0);

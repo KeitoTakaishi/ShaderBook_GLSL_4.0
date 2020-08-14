@@ -27,6 +27,9 @@ public:
 
 	ofxPanel gui;
 	ofParameter<float> refrectFactor;
+	ofParameter<float> eta;
+	ofParameter<float> transparent;
+
 	ofParameter<ofFloatColor> materialColor;
 	//CubeMap
 	GLuint texID;
