@@ -21,19 +21,19 @@ subroutine vec4 RrenderPassType();
 subroutine uniform RrenderPassType RenderPass;
 
 vec3 debug(){
-    return vec3(1.0, 0.0, 0.0); 
+    return vec3(1.0, 0.0, 0.0);
 }
 
 
 vec3 phongMmodel(vec3 norDir, vec3 eyeDir, vec3 lightDir){
      vec3 r = reflect(-lightDir, norDir);//reflection
-     
-     
-     return lightIntensity * 
-        (Ka + 
-        Kd * max(dot(lightDir, norDir), 0.0)) + 
+
+
+     return lightIntensity *
+        (Ka +
+        Kd * max(dot(lightDir, norDir), 0.0)) +
         Ks * pow( max(dot(r, eyeDir), 0.0), shininess);
-        
+
 }
 
 float luma(vec4 c){
@@ -67,7 +67,7 @@ vec4 EdgeDetectionPass(){
     float sy = s00 + 2.0 * s01 + s02 - (s20 + 2.0 * s21 + s22);
     float dist = sx * sx + sy * sy;
 
-    
+
     /*
     float edge = 0.0;
     if(dist > EdgeThreshold){
@@ -77,14 +77,11 @@ vec4 EdgeDetectionPass(){
     }
     */
     float edge = step(EdgeThreshold, dist);
-    
-    
-    
+
+
+
     return vec4(vec3(edge), 1.0);
-    
-
-
-    return texture(tex0, vTexCoord * uRes);
+  
 }
 
 void main(){
