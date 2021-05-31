@@ -11,6 +11,7 @@ uniform mat4 view;
 uniform mat4 proj;
 
 void main(){
+    //view space normal
     n = normalize(mat3(transpose(inverse(view * model))) * normalize(position.xyz));
     p = vec3(view * model * vec4(position, 1.0));
     gl_Position = proj * view * model * vec4(position, 1.0);

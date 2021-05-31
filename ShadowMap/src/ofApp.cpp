@@ -50,7 +50,7 @@ void ofApp::update(){
 	
 	ofEnableDepthTest();
 	glEnable(GL_CULL_FACE);
-	
+	glCullFace(GL_FRONT);
 	shadowMap->renderDepthBegin();
 	shadowMap->camBegin();
 	//render2Fbo(renderShader);//off screen rendering-------------------------------

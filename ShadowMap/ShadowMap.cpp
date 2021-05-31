@@ -15,10 +15,10 @@ ShadowMap::ShadowMap()
 	fboSettings->depthStencilAsTexture = true;
 	fboSettings->useStencil = true;
 	fboSettings->depthStencilInternalFormat = GL_DEPTH_COMPONENT32F;
-	//fboSettings->minFilter = GL_LINEglAR;
-	//fboSettings->maxFilter = GL_LINEAR;
-	fboSettings->minFilter = GL_NEAREST;
-	fboSettings->maxFilter = GL_NEAREST;
+	fboSettings->minFilter = GL_LINEAR;
+	fboSettings->maxFilter = GL_LINEAR;
+	//fboSettings->minFilter = GL_NEAREST;
+	//fboSettings->maxFilter = GL_NEAREST;
 	fboSettings->wrapModeHorizontal = GL_CLAMP_TO_EDGE;
 	fboSettings->wrapModeVertical = GL_CLAMP_TO_EDGE;
 	this->depthFbo.allocate(*fboSettings);

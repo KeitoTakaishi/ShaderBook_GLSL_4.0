@@ -28,8 +28,10 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 		ofParameter<float> refrectFactor;
 		ofParameter<ofFloatColor> materialColor;
+		
 		//CubeMap
 		GLuint texID;
 		ofImage img[6];
+		GLuint uniLoc;
 		
 };

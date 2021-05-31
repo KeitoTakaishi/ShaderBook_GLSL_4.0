@@ -8,6 +8,7 @@ void ofApp::setup(){
 	gui.setup();
 	gui.add(refrectFactor.set("ReflectFactor", 0.75, 0.75, 1.0));
 	gui.add(materialColor.set("MaterialColor", ofFloatColor(0.7, 0.28, 0.28), ofFloatColor(0.0, 0.0, 0.0), ofFloatColor(1.0, 1.0, 1.0)));
+
 }
 
 //--------------------------------------------------------------
@@ -22,7 +23,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	ofEnableDepthTest();
 
-	glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
 	shader.begin();
 	cam.begin();
 	ofMatrix4x4 model;
@@ -34,9 +35,13 @@ void ofApp::draw(){
 	shader.setUniformMatrix4f("view", view);
 	shader.setUniformMatrix4f("proj", proj);
 	shader.setUniform1i("DrawSkyBox", 1);
-	shader.setUniform1f("refrectFactor", refrectFactor);
+	shader.setUniform1f("reflectFactor", refrectFactor);
 	shader.setUniform3f("materialColor", ofVec3f(materialColor.get().r, materialColor.get().g, materialColor.get().b));
 	shader.setUniform3f("worldCameraPos", cam.getPosition());
+	
+
+	uniLoc = shader.getUniformLocation("CubeMap");
+	glUniform1i(uniLoc, 0);
 
 	mesh.draw();
 
@@ -64,7 +69,7 @@ void ofApp::draw(){
 
 	cam.end();
 	shader.end();
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	ofDisableDepthTest();
 	gui.draw();
@@ -101,6 +106,7 @@ void ofApp::createCubeMapTex() {
 	2. CubeMapTextureÇbindÇ∑ÇÈ
 	3. âÊëúÉfÅ[É^ÇLoad
 	*/
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, texID);
 	
@@ -127,4 +133,6 @@ void ofApp::createCubeMapTex() {
 	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	
 }

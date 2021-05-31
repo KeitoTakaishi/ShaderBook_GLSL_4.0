@@ -1,5 +1,6 @@
 #version 400
 
+//in view space
 in vec3 p;
 in vec3 n;
 
@@ -16,7 +17,7 @@ layout (location = 0) out vec4 FragColor;
 
 vec3 ads(){
     vec3 _n = normalize(n);
-    vec3 s = normalize(lightPosition - p.xyz);
+    vec3 s = normalize(lightPosition - p.xyz);//vertex to light
     vec3 v = normalize(-vec3(p));
 
     if(optimize == 0){
@@ -31,7 +32,6 @@ vec3 ads(){
         Kd * max(dot(s, n), 0.0)) + 
         Ks * pow( max(dot(h, n), 0.0), shininess);
     }
-
 }
 
 

@@ -55,7 +55,7 @@ void ofApp::draw(){
 	shader.setUniform3f("_Ks", ofVec3f(Ks));
 	shader.setUniform1f("_shininess", shininess);
 	shader.setUniform1i("_debug", int(debug));
-
+	
 
 	
 	cam.begin();

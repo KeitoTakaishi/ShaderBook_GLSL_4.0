@@ -16,9 +16,18 @@ uniform vec2 uRes;
 void main(){
 
     //depth map
-	float depta = 0.00001;
-	float depth = textureProj(shadowMap, ShadowCoord).r + depta;
-    if(ShadowCoord.z/ShadowCoord.w > depth){
+	float delta = 0.00001;
+	float depth = textureProj(shadowMap, ShadowCoord).r + delta;
+    
+
+	//vec4 d =  vec4(1.0/uRes.x, 1.0/uRes.y, 0.0, 0.0);
+	//float d0 = textureProj(shadowMap, ShadowCoord - d).r;
+	//float d1 = textureProj(shadowMap, ShadowCoord + vec4(-d.x, d.y, 0.0, 0.0)).r;
+	//float d2 = textureProj(shadowMap, ShadowCoord + vec4(d.x, -d.y, 0.0, 0.0)).r;
+	//float d3 = textureProj(shadowMap, ShadowCoord + d).r;
+	//depth = (d0 + d1 + d2 + d3)*0.25 + delta;
+
+	if(ShadowCoord.z/ShadowCoord.w > depth){
 		depth = 0.0;
 	}else{
 		depth = 1.0;

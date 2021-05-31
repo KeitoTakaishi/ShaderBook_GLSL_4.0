@@ -13,11 +13,8 @@ in vec3 normal;
 in vec4 color;
 in vec2 texcoord;
 
-//out vec3 vPosition;
-//out vec3 vNormal;
-//out vec3 envBoxvNormal;
-//out vec4 vColor;
-//out vec2 vTexCoord;
+
+out vec3 vNormal;
 out vec3 refrectDir;
 
 void main() {
@@ -31,5 +28,6 @@ void main() {
         refrectDir = normalize(position);
     }
     
+    vNormal = normal;
     gl_Position    = proj * view * model * vec4(position, 1.0);
 }

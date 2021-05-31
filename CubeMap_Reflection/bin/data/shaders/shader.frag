@@ -2,9 +2,9 @@
 precision mediump float;
 
 
-uniform samplerCube	EnvMap;
+uniform samplerCube	CubeMap;
 uniform int DrawSkyBox;
-uniform float refrectFactor;
+uniform float reflectFactor;
 uniform vec3 materialColor;
 /*
 in vec3 vPosition;
@@ -14,17 +14,19 @@ in vec4 vColor;
 in vec2 vTexCoord;
 */
 in vec3 refrectDir;
+in vec3 vNormal;
 
 out vec4 outputColor;
 
 void main(){    
     if(DrawSkyBox == 1){
         //Cube
-        vec4 envColor  = texture(EnvMap, refrectDir);
-        outputColor = vec4( vec3(mix(materialColor, envColor.xyz, refrectFactor)), 1.0);
+        vec4 envColor  = texture(CubeMap, refrectDir);
+        outputColor = vec4( vec3(mix(materialColor, envColor.xyz, reflectFactor)), 1.0);
+        //outputColor = vec4(vec3(vNormal), 1.0);
     }else{
         //Box
-       vec4 envColor  = texture(EnvMap, refrectDir);
+       vec4 envColor  = texture(CubeMap, refrectDir);
        outputColor = envColor;
     }
 }
